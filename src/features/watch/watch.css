@@ -1,0 +1,154 @@
+.player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--border);
+}
+.player__stage,
+.player-sim,
+.player-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.player-video {
+  object-fit: contain;
+  background: #000;
+}
+.player__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  background: rgba(10, 10, 15, 0.9);
+}
+.player__overlay[hidden] {
+  display: none;
+}
+
+/* Reproductor simulado */
+.player-sim__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 15, 0.35),
+    rgba(10, 10, 15, 0.1) 40%,
+    rgba(10, 10, 15, 0.8)
+  );
+}
+.player-sim__top {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.player-sim__bottom {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.player-sim__time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  background: rgba(10, 10, 15, 0.72);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+}
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 36px;
+}
+.eq i {
+  display: block;
+  width: 6px;
+  height: 100%;
+  background: var(--accent-soft);
+  border-radius: 3px;
+  transform-origin: bottom;
+  animation: eq-bounce 1s ease-in-out infinite;
+}
+.eq i:nth-child(2) {
+  animation-delay: -0.8s;
+}
+.eq i:nth-child(3) {
+  animation-delay: -0.5s;
+}
+.eq i:nth-child(4) {
+  animation-delay: -0.3s;
+}
+.eq i:nth-child(5) {
+  animation-delay: -0.65s;
+}
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Acceso denegado y sala de espera */
+.watch-locked,
+.watch-wait {
+  position: relative;
+  min-height: 420px;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.watch-locked__poster,
+.watch-wait__poster {
+  position: absolute;
+  inset: 0;
+}
+.watch-locked__poster .cover {
+  filter: blur(18px);
+  transform: scale(1.15);
+}
+.watch-wait__poster .cover {
+  filter: blur(6px) brightness(0.6);
+  transform: scale(1.05);
+}
+.watch-locked__panel,
+.watch-wait__panel {
+  position: relative;
+  max-width: 480px;
+  margin: 24px;
+  padding: 28px;
+  text-align: center;
+  background: rgba(10, 10, 15, 0.82);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+.watch-wait__panel .countdown {
+  justify-content: center;
+}
+
+.watch-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  height: 100%;
+}

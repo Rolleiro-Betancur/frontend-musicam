@@ -1,0 +1,50 @@
+.gateway {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.gateway__strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 176, 32, 0.14);
+  border-bottom: 1px solid var(--warning);
+  color: var(--warning);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.gateway__body {
+  padding: 20px;
+}
+.gateway__summary {
+  margin: 0 0 20px;
+  display: grid;
+  gap: 10px;
+}
+.gateway__summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.gateway__summary dt {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.gateway__summary dd {
+  margin: 0;
+  text-align: right;
+  word-break: break-word;
+}
+.gateway__amount {
+  font-family: 'Space Grotesk Variable', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+.gateway__ref {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}

@@ -1,0 +1,236 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter Variable', system-ui, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: 'Space Grotesk Variable', 'Inter Variable', system-ui, sans-serif;
+  font-weight: 700;
+}
+
+h1:focus {
+  outline: none;
+}
+
+a {
+  color: var(--accent-soft);
+}
+
+.eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.text-muted-2 {
+  color: var(--text-muted);
+}
+
+.brand {
+  font-family: 'Space Grotesk Variable', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+}
+.brand span {
+  color: var(--accent-soft);
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.app-shell > main {
+  flex: 1 0 auto;
+}
+
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+/* Accesibilidad */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 2000;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+/* Bootstrap anula el contorno (`outline: 0`) y deja solo un halo tenue en estos componentes:
+   se restablece el contorno visible de §6.5. */
+:is(
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [tabindex]:not([tabindex='-1']),
+  .btn,
+  .form-control,
+  .form-select,
+  .form-check-input,
+  .page-link,
+  .nav-link,
+  .dropdown-item,
+  .btn-close,
+  .navbar-toggler
+):focus-visible {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skeleton */
+.skeleton {
+  display: block;
+  background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2));
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Avatar */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+/* Toasts */
+.toast-stack {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+}
+
+/* Layouts */
+.panel-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 992px) {
+  .panel-layout {
+    grid-template-columns: 240px 1fr;
+  }
+}
+.panel-nav .nav-link {
+  color: var(--text-muted);
+  border-radius: 10px;
+}
+.panel-nav .nav-link.active,
+.panel-nav .nav-link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.role-card {
+  cursor: pointer;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 16px;
+  height: 100%;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+.role-card:hover {
+  background: var(--surface-2);
+}
+.role-input:checked + .role-card {
+  border-color: var(--accent-soft);
+  background: var(--surface-2);
+}
+.role-input:focus-visible + .role-card {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+.hero-welcome {
+  padding: 96px 0 80px;
+  background:
+    radial-gradient(900px 400px at 20% 0%, rgba(109, 74, 255, 0.35), transparent 70%),
+    linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero-welcome h1 {
+  font-size: clamp(32px, 6vw, 48px);
+}
+
+/* Paneles con barra lateral: fija en escritorio, offcanvas en móvil */
+.panel-main {
+  min-width: 0;
+}
+@media (min-width: 992px) {
+  .panel-sidebar {
+    position: sticky;
+    top: 16px;
+    align-self: start;
+  }
+}
+.offcanvas-lg.panel-sidebar {
+  --bs-offcanvas-bg: var(--surface);
+  --bs-offcanvas-width: 280px;
+}

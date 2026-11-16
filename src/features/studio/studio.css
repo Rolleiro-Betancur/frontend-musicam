@@ -1,0 +1,222 @@
+/* Listado de eventos */
+.studio-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.studio-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px 16px;
+  align-items: center;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+.studio-row__thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.studio-row__title {
+  margin: 0;
+  font-family: 'Space Grotesk Variable', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.studio-row__meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.studio-row__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+@media (min-width: 768px) {
+  .studio-row {
+    grid-template-columns: 140px 1fr auto;
+  }
+  .studio-row__actions {
+    grid-column: auto;
+    justify-content: flex-end;
+    max-width: 320px;
+  }
+}
+
+/* Estados */
+.studio-state {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+}
+.studio-state--programado {
+  color: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+.studio-state--finalizado {
+  color: var(--success);
+  border-color: var(--success);
+}
+.studio-state--cancelado {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.studio-state--borrador {
+  color: var(--text-muted);
+}
+
+/* Resumen */
+.studio-quick {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.studio-quick a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  min-height: 56px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+.studio-quick a:hover {
+  border-color: var(--accent-soft);
+}
+
+/* Sala de control */
+.studio-steps {
+  display: grid;
+  gap: 12px;
+}
+.studio-step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px 20px;
+}
+.studio-step--activo {
+  border-color: var(--accent-soft);
+}
+.studio-step--bloqueado .studio-step__head h2 {
+  color: var(--text-muted); /* sin `opacity`: bajaría el contraste de sus textos de 4,5:1 */
+}
+.studio-step__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.studio-step__num {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+  font-weight: 700;
+}
+.studio-step--activo .studio-step__num {
+  background: var(--accent);
+  color: #fff;
+}
+.studio-step--hecho .studio-step__num {
+  background: var(--success);
+  color: #0a0a0f;
+}
+.studio-step__state {
+  margin-left: auto;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.studio-step__body {
+  margin-top: 16px;
+}
+.studio-metrics {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.studio-metric {
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.studio-metric__value {
+  display: block;
+  font-family: 'Space Grotesk Variable', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.studio-metric__label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* Gráfica de ventas */
+.studio-chart__canvas {
+  position: relative;
+  height: 280px;
+}
+
+/* Tabla de retiros */
+.studio-table {
+  --bs-table-bg: transparent;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+.studio-table th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.studio-table td {
+  white-space: nowrap;
+}
+.studio-table td.studio-table__wrap {
+  white-space: normal;
+  min-width: 180px;
+}
+.studio-state--pendiente {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+.studio-state--pagado {
+  color: var(--success);
+  border-color: var(--success);
+}
+.studio-state--rechazado {
+  color: var(--danger);
+  border-color: var(--danger);
+}

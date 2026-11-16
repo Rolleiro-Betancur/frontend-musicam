@@ -1,0 +1,28 @@
+:root {
+  /* Superficies */
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface-2: #1b1b25;
+  --surface-3: #252532;
+  --border: rgba(255, 255, 255, 0.1);
+  /* Texto */
+  --text: #f4f4f8;
+  --text-muted: #a3a3b2;
+  /* Marca */
+  --accent: #6d4aff;
+  --accent-hover: #5a38e6;
+  --accent-soft: #a898ff; /* soft = texto/enlaces sobre oscuro */
+  /* Estado */
+  --live: #d91e32;
+  --live-dot: #ff3b4e;
+  --success: #2ecc8f;
+  --warning: #ffb020;
+  --danger: #ff6b7a;
+  /* Forma y espacio */
+  --radius-card: 14px;
+  --radius-pill: 999px;
+  --space: 8px;
+  /* Movimiento */
+  --t-fast: 150ms;
+  --t-base: 250ms;
+}

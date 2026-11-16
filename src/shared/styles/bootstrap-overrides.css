@@ -1,0 +1,164 @@
+/* Tema oscuro: se sobreescriben variables de Bootstrap, no sus clases. */
+[data-bs-theme='dark'] {
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text);
+  --bs-body-font-family: 'Inter Variable', system-ui, sans-serif;
+  --bs-secondary-color: var(--text-muted);
+  --bs-tertiary-bg: var(--surface-2);
+  --bs-secondary-bg: var(--surface);
+  --bs-emphasis-color: var(--text);
+  --bs-border-color: var(--border);
+  --bs-border-color-translucent: var(--border);
+  --bs-primary: var(--accent);
+  --bs-primary-rgb: 109, 74, 255;
+  --bs-link-color: var(--accent-soft);
+  --bs-link-color-rgb: 168, 152, 255;
+  --bs-link-hover-color: #fff;
+  --bs-link-hover-color-rgb: 255, 255, 255;
+  --bs-danger: var(--danger);
+  --bs-danger-rgb: 255, 107, 122;
+  --bs-success: var(--success);
+  --bs-success-rgb: 46, 204, 143;
+  --bs-warning: var(--warning);
+  --bs-warning-rgb: 255, 176, 32;
+  --bs-form-invalid-color: var(--danger);
+  --bs-form-invalid-border-color: var(--danger);
+  --bs-border-radius: 10px;
+  --bs-border-radius-lg: var(--radius-card);
+  --bs-border-radius-pill: var(--radius-pill);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-hover-bg: var(--accent-hover);
+  --bs-btn-hover-border-color: var(--accent-hover);
+  --bs-btn-active-bg: var(--accent-hover);
+  --bs-btn-active-border-color: var(--accent-hover);
+  --bs-btn-disabled-bg: var(--accent);
+  --bs-btn-disabled-border-color: var(--accent);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+  --bs-btn-focus-shadow-rgb: 109, 74, 255;
+}
+
+.btn {
+  min-width: 44px;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--surface-2);
+  border-color: var(--border);
+  min-height: 44px;
+}
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--surface-2);
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 0.2rem rgba(168, 152, 255, 0.25);
+}
+.form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+.form-text {
+  color: var(--text-muted);
+}
+
+.card,
+.modal-content,
+.dropdown-menu,
+.offcanvas {
+  --bs-card-bg: var(--surface);
+  --bs-modal-bg: var(--surface);
+  --bs-dropdown-bg: var(--surface-2);
+  --bs-dropdown-link-hover-bg: var(--surface-3);
+  --bs-dropdown-border-color: var(--border);
+  --bs-card-border-color: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.toast {
+  --bs-toast-bg: var(--surface-2);
+  --bs-toast-border-color: var(--border);
+}
+
+/* Contraste (WCAG ≥ 4,5:1): los botones "outline" de Bootstrap usan #dc3545 y #6c757d, que sobre
+   fondos oscuros dan 4,1–4,4:1. Se reemplazan por los tokens de §6.1. */
+.btn-outline-danger {
+  --bs-btn-color: var(--danger);
+  --bs-btn-border-color: var(--danger);
+  --bs-btn-hover-color: var(--bg);
+  --bs-btn-hover-bg: var(--danger);
+  --bs-btn-hover-border-color: var(--danger);
+  --bs-btn-active-color: var(--bg);
+  --bs-btn-active-bg: var(--danger);
+  --bs-btn-active-border-color: var(--danger);
+  --bs-btn-disabled-color: var(--danger);
+  --bs-btn-disabled-border-color: var(--danger);
+  --bs-btn-focus-shadow-rgb: 255, 107, 122;
+}
+.btn-outline-secondary {
+  --bs-btn-color: var(--text-muted);
+  --bs-btn-border-color: rgba(255, 255, 255, 0.35);
+  --bs-btn-hover-color: var(--text);
+  --bs-btn-hover-bg: var(--surface-3);
+  --bs-btn-hover-border-color: rgba(255, 255, 255, 0.5);
+  --bs-btn-active-color: var(--text);
+  --bs-btn-active-bg: var(--surface-3);
+  --bs-btn-active-border-color: rgba(255, 255, 255, 0.5);
+  --bs-btn-disabled-color: var(--text-muted);
+  --bs-btn-disabled-border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Áreas táctiles ≥ 44 px (§6.5): los componentes de Bootstrap son más pequeños por defecto. */
+.btn-close {
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background-position: center;
+  background-size: 1em;
+}
+.page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+.navbar .nav-link,
+.panel-nav .nav-link,
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding-left: 0;
+}
+.form-check .form-check-input {
+  flex-shrink: 0;
+  float: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: 0;
+}
+.form-check-label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 0;
+}
+.navbar-toggler {
+  min-width: 44px;
+  min-height: 44px;
+}

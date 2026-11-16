@@ -1,0 +1,6344 @@
+{
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "responses": {
+          "503": {
+            "description": "Servicio no disponible.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Salud"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Estado del servicio",
+        "description": "Verifica la conexi\u00f3n con la base de datos."
+      }
+    },
+    "/api/v1/auth/registro": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiadas peticiones.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Registro"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Registrar usuario o artista",
+        "description": "RN-01: exige `acepta_tratamiento_datos=true` y guarda fecha y versi\u00f3n de la pol\u00edtica. RN-02: el artista se da de alta sin verificaci\u00f3n manual. RN-03: pol\u00edtica de contrase\u00f1a."
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiadas peticiones.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tokens"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Iniciar sesi\u00f3n",
+        "description": "Mensaje gen\u00e9rico `CREDENCIALES_INVALIDAS` para no revelar si el correo existe (RN-03)."
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessToken"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Renovar access token",
+        "description": "Enviar el **refresh token** como Bearer. Verifica que la cuenta siga activa (RN-19)."
+      }
+    },
+    "/api/v1/usuarios/me": {
+      "get": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Perfil propio",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Devuelve el perfil del usuario autenticado. El rol y el estado se leen de la BD en cada petici\u00f3n (RN-19). Nunca incluye `password_hash`."
+      },
+      "patch": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioActualizar"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Editar perfil propio",
+        "description": "Edita `nombre`, `biografia` y `nombre_artistico` (solo artistas, \u00fanico)."
+      }
+    },
+    "/api/v1/usuarios/me/foto": {
+      "put": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FotoSubir"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Subir foto de perfil",
+        "description": "RN-18: JPEG/PNG/WebP de hasta 2 MB. Se valida por contenido, se corrige la orientaci\u00f3n, se elimina el EXIF y se guarda como WebP 512\u00d7512. Reemplaza la anterior."
+      },
+      "delete": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Quitar foto de perfil",
+        "description": "RN-18: borra el archivo guardado y deja `foto_url` en `null`. Idempotente."
+      }
+    },
+    "/api/v1/usuarios/me/favoritos": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Mis eventos favoritos",
+        "description": "Resumen de los eventos que marqu\u00e9, del m\u00e1s reciente al m\u00e1s antiguo. Los eventos que dejaron de ser visibles (RN-21: cancelados, suspendidos\u2026) no aparecen. `ADMIN`: 403."
+      }
+    },
+    "/api/v1/usuarios/me/favoritos/{evento_id}": {
+      "put": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Marcar un evento como favorito",
+        "description": "RN-17: idempotente (repetirlo da 204 igual). Solo eventos visibles (RN-21); un borrador, cancelado o suspendido responde 404 `EVENTO_NO_ENCONTRADO`."
+      },
+      "delete": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Quitar un favorito",
+        "description": "RN-17: idempotente; quitar algo que no estaba marcado tambi\u00e9n da 204."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/usuarios/me/seguidos": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistaPublicoPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Artistas que sigo",
+        "description": "RN-17: solo `nombre_artistico`, `foto_url` y `biografia`; nunca el email ni otros datos privados. No incluye artistas suspendidos. `ADMIN`: 403."
+      }
+    },
+    "/api/v1/usuarios/me/seguidos/{artista_id}": {
+      "put": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Seguir a un artista",
+        "description": "RN-17: idempotente. Solo a un usuario con rol `ARTISTA` y `ACTIVO` (si no existe, no es artista o est\u00e1 suspendido: 404 `USUARIO_NO_ENCONTRADO`); a uno mismo: 422."
+      },
+      "delete": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Dejar de seguir a un artista",
+        "description": "RN-17: idempotente; dejar de seguir a quien no segu\u00eda tambi\u00e9n da 204."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "artista_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "BORRADOR",
+                "PROGRAMADO",
+                "EN_VIVO",
+                "FINALIZADO",
+                "CANCELADO"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Busca en el t\u00edtulo y en el nombre art\u00edstico.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "categoria",
+            "schema": {
+              "enum": [
+                "POP",
+                "ROCK",
+                "URBANO",
+                "ELECTRONICA",
+                "SALSA_TROPICAL",
+                "FOLCLOR",
+                "JAZZ_BLUES",
+                "CLASICA",
+                "OTRO"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "artista_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "desde",
+            "description": "`fecha_inicio` mayor o igual.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "hasta",
+            "description": "`fecha_inicio` menor o igual.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Cat\u00e1logo p\u00fablico de eventos",
+        "description": "RN-21: solo `PROGRAMADO`, `EN_VIVO` y `FINALIZADO` con replay disponible, sin suspensi\u00f3n de admin y de artistas activos. Ordenado por `fecha_inicio`."
+      },
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evento"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoCrear"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear evento",
+        "description": "RN-04: nace en `BORRADOR`. Precio entero dentro del rango configurado. Crear y publicar no genera ning\u00fan cargo al artista (C2)."
+      }
+    },
+    "/api/v1/eventos/{evento_id}": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoDetalle"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "security": [
+          {},
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Detalle de un evento",
+        "description": "P\u00fablico si cumple RN-21. Un `BORRADOR`, `CANCELADO` o suspendido solo lo ve su due\u00f1o (para los dem\u00e1s es 404). Con sesi\u00f3n a\u00f1ade `es_favorito` y `comprado`."
+      },
+      "patch": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evento"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventoActualizar"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Editar evento propio",
+        "description": "RN-04: en `BORRADOR` se edita todo; en `PROGRAMADO` t\u00edtulo, descripci\u00f3n, portada y categor\u00eda, y precio, fecha, duraci\u00f3n y replay solo sin compras aprobadas. El resto de estados no se edita."
+      },
+      "delete": {
+        "responses": {
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Eliminar evento en borrador",
+        "description": "RN-05: solo se elimina un `BORRADOR`; los dem\u00e1s estados responden 409 `TRANSICION_INVALIDA`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/publicar": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evento"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Publicar evento",
+        "description": "`BORRADOR \u2192 PROGRAMADO` (RN-05). RN-04: `fecha_inicio` \u2265 ahora + 30 min. RN-02: un artista sin eventos `FINALIZADO` puede tener hasta 3 `PROGRAMADO` a la vez."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/cancelar": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evento"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Eventos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Cancelar evento",
+        "description": "`BORRADOR`/`PROGRAMADO \u2192 CANCELADO` (RN-05, RN-13). `EN_VIVO` y `FINALIZADO` no."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/transmision/credenciales": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Credenciales"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Generar o rotar la clave de emisi\u00f3n",
+        "description": "Solo el due\u00f1o y con el evento `PROGRAMADO`. RN-11: la clave es aleatoria, se guarda solo su hash SHA-256 y se muestra **una \u00fanica vez**. Pedirla de nuevo rota la clave y la anterior deja de valer."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/transmision/iniciar": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadoTransmision"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IniciarTransmision"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Iniciar la transmisi\u00f3n",
+        "description": "`PROGRAMADO \u2192 EN_VIVO` (RN-05) solo con la clave de emisi\u00f3n v\u00e1lida (RQ6, RN-11). Un artista no puede tener dos eventos `EN_VIVO`. Con `ENFORCE_START_WINDOW=true` solo desde `fecha_inicio \u2212 START_WINDOW_MIN`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/transmision/finalizar": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadoTransmision"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Finalizar la transmisi\u00f3n",
+        "description": "`EN_VIVO \u2192 FINALIZADO` (RN-12): fija `fin_real`, pone `espectadores_actuales` en 0 y `replay_disponible = replay_habilitado`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/transmision": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadoTransmision"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Estado de la transmisi\u00f3n",
+        "description": "Solo el due\u00f1o: estado, audiencia actual, pico y minutos transcurridos desde `inicio_real` (hasta `fin_real` al finalizar, RN-12)."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/reproduccion/entrar": {
+      "post": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reproduccion"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Entrar a ver el evento (vivo o replay)",
+        "description": "RN-10 (C4): evento suspendido \u2192 403 `EVENTO_SUSPENDIDO`. Se entrega URL solo si el evento est\u00e1 `EN_VIVO` (`VIVO`) o `FINALIZADO` con `replay_disponible` (`REPLAY`) y el solicitante es comprador con compra `APROBADA`, el artista due\u00f1o o un `ADMIN`; si no, 403 `ACCESO_NO_AUTORIZADO`. Cuenta la entrada con un `UPDATE` at\u00f3mico."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/reproduccion/salir": {
+      "post": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Salir de la reproducci\u00f3n",
+        "description": "Descuenta un espectador de `espectadores_actuales` (nunca por debajo de 0). Exige (RN-10) tener derecho de acceso al evento, pero no depende de su estado actual."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/dev/eventos/{evento_id}/audiencia-simulada": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadoTransmision"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AudienciaSimulada"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transmision"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Fijar audiencia simulada (solo desarrollo)",
+        "description": "Responde 404 si `ENABLE_DEV_ENDPOINTS` es falso. Due\u00f1o o `ADMIN`. Fija `espectadores_actuales` y sube `pico_espectadores` para poblar estad\u00edsticas en demos."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/eventos/{evento_id}/compras": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraCreada"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompraCrear"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Compras"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Comprar entrada",
+        "description": "RN-07: `USUARIO` o `ARTISTA` (no el due\u00f1o del evento) sobre un evento a la venta. Crea una compra `PENDIENTE` con precio y comisi\u00f3n congelados (RN-06) y devuelve el checkout simulado. Un pago aprobado da acceso autom\u00e1tico (RN-08)."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/usuarios/me/compras": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "PENDIENTE",
+                "APROBADA",
+                "RECHAZADA",
+                "ANULADA",
+                "REEMBOLSADA"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "proximos",
+            "description": "`true`: compras `APROBADA` de eventos `PROGRAMADO` o `EN_VIVO`, por `fecha_inicio` ascendente (equivale a \u00abMi calendario\u00bb).",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiCompraPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Mis entradas",
+        "description": "Compras del propio usuario (una `APROBADA` es el acceso al evento, RN-08) con el resumen del evento, el estado de la compra y el monto pagado. Filtros: `estado` y `proximos=true` (\u00abMis eventos / Mi calendario\u00bb: compras `APROBADA` de eventos `PROGRAMADO` o `EN_VIVO`, por `fecha_inicio` ascendente). Sin `proximos`, de la m\u00e1s reciente a la m\u00e1s antigua. Un `ADMIN` recibe 403."
+      }
+    },
+    "/api/v1/compras/{compra_id}": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Compra"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Compras"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Detalle de una compra",
+        "description": "Solo su due\u00f1o o un `ADMIN`. El frontend la consulta hasta que deje de ser `PENDIENTE`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "compra_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/pagos/wompi/simulador/{referencia}": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Compra"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Simulador"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Compras"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Simular el resultado del checkout",
+        "description": "Solo con `PAYMENT_GATEWAY=wompi_simulado`. Genera un evento `transaction.updated` firmado y lo procesa por el mismo camino que `POST /webhooks/wompi` (RN-09). Solo el due\u00f1o de la compra."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "referencia",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/webhooks/wompi": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Demasiadas peticiones.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookRespuesta"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WompiEvento"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Compras"
+        ],
+        "summary": "Webhook de Wompi",
+        "description": "Recibe `transaction.updated`. Verifica el checksum (cabecera `X-Event-Checksum` o `signature.checksum`), compara el monto con el de la compra guardada y es idempotente (RN-09). Responde 200 siempre, salvo firma inv\u00e1lida (401)."
+      }
+    },
+    "/api/v1/artistas": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Busca dentro del nombre art\u00edstico (sin distinguir may\u00fasculas).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistaPublicoPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artistas"
+        ],
+        "summary": "Lista de artistas",
+        "description": "P\u00fablica y paginada, solo artistas `ACTIVO` (su cat\u00e1logo respeta RN-21), por nombre art\u00edstico. Filtro `q`. Solo se muestran datos p\u00fablicos (nunca el email)."
+      }
+    },
+    "/api/v1/artistas/{artista_id}": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistaPerfil"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artistas"
+        ],
+        "security": [
+          {},
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Perfil p\u00fablico de un artista",
+        "description": "Nombre art\u00edstico, foto, biograf\u00eda, `seguidores` (solo el conteo) y `eventos_proximos` (visibles, `PROGRAMADO` o `EN_VIVO`). `siguiendo` aparece solo si hay sesi\u00f3n. Los eventos pr\u00f3ximos son los visibles seg\u00fan RN-21. Un artista suspendido, inexistente o que no es `ARTISTA` responde 404. Las rutas `/artistas/me/...` del panel no chocan con esta: `uuid` nunca coincide con `me`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "artista_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/artistas/me/eventos": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "BORRADOR",
+                "PROGRAMADO",
+                "EN_VIVO",
+                "FINALIZADO",
+                "CANCELADO"
+              ]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artista (panel)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Mis eventos",
+        "description": "Todos los eventos propios en cualquier estado; filtro opcional `estado`."
+      }
+    },
+    "/api/v1/artistas/me/estadisticas": {
+      "get": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Estadisticas"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artista (panel)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Estad\u00edsticas globales",
+        "description": "Resumen del artista (\u00a78.4.1) y su saldo (RN-14). Solo cuentan compras `APROBADA`; las `REEMBOLSADA`, `ANULADA`, `RECHAZADA` y `PENDIENTE` nunca suman. `ventas_por_dia` agrupa por fecha en la zona horaria **America/Bogota** e incluye solo los d\u00edas con ventas."
+      }
+    },
+    "/api/v1/artistas/me/eventos/{evento_id}/estadisticas": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadisticasEvento"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artista (panel)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Estad\u00edsticas de un evento",
+        "description": "Solo el due\u00f1o (un evento ajeno responde 403 `NO_ES_DUENO`). Ingresos seg\u00fan RN-14: solo cuentan compras `APROBADA`. `duracion_real_min` es `null` si el evento no se transmiti\u00f3 o no termin\u00f3. `ventas_por_dia` usa la zona horaria **America/Bogota** y solo los d\u00edas con ventas."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/artistas/me/saldo": {
+      "get": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Saldo"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artista (panel)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Saldo del artista",
+        "description": "RN-14. El saldo no se guarda: se calcula. `disponible = ingresos liberados (eventos `FINALIZADO`) \u2212 retiros `PENDIENTE` \u2212 retiros `PAGADO``; los `RECHAZADO` no restan. `retenido` es el neto de eventos `PROGRAMADO`/`EN_VIVO`."
+      }
+    },
+    "/api/v1/artistas/me/retiros": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Retiro"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetiroCrear"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artista (panel)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Solicitar un retiro",
+        "description": "RN-15: `monto_cop` \u2265 m\u00ednimo (`RETIRO_MIN_COP`, 422 `MONTO_FUERA_DE_RANGO`) y \u2264 disponible (422 `SALDO_INSUFICIENTE`). Se bloquea la fila del artista mientras se calcula y se inserta, as\u00ed que dos retiros simult\u00e1neos no pueden exceder el saldo. Solo se guardan banco, tipo de cuenta y **los \u00faltimos 4 d\u00edgitos**. Nace `PENDIENTE`, o `PAGADO` con `referencia_pago` simulada si `RETIRO_AUTO_APROBAR=true`."
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "PENDIENTE",
+                "PAGADO",
+                "RECHAZADO"
+              ]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetiroPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Artista (panel)"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Historial de retiros",
+        "description": "Paginado, del m\u00e1s reciente al m\u00e1s antiguo; filtro opcional `estado`. Los retiros los resuelve un `ADMIN` (RN-16)."
+      }
+    },
+    "/api/v1/admin/dashboard": {
+      "get": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Dashboard de m\u00e9tricas",
+        "description": "Usuarios por rol y por estado, eventos por estado, entradas vendidas (compras `APROBADA`), ingresos brutos, comisiones acumuladas y retiros pendientes (cantidad y monto). Todo con consultas SQL agregadas."
+      }
+    },
+    "/api/v1/admin/usuarios": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "rol",
+            "schema": {
+              "enum": [
+                "USUARIO",
+                "ARTISTA",
+                "ADMIN"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "ACTIVO",
+                "SUSPENDIDO"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Busca en nombre, email y nombre art\u00edstico.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar usuarios",
+        "description": "Filtros `rol`, `estado` y `q` (nombre, email o nombre art\u00edstico). Paginado."
+      },
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCrear"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear otro administrador",
+        "description": "RN-01: es la \u00fanica v\u00eda (junto a `flask crear-admin`) para crear un `ADMIN`. No pasa por el registro p\u00fablico. `consentimiento_datos_en` y `version_politica_datos` se rellenan con la fecha actual y `POLITICA_DATOS_VERSION`."
+      }
+    },
+    "/api/v1/admin/usuarios/{usuario_id}": {
+      "get": {
+        "responses": {
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Detalle de un usuario",
+        "description": "Nunca incluye `password_hash` ni datos financieros."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "usuario_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/usuarios/{usuario_id}/estado": {
+      "patch": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstadoUsuario"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Suspender o reactivar un usuario",
+        "description": "RN-19: un usuario `SUSPENDIDO` recibe 403 `CUENTA_SUSPENDIDA` en todo endpoint autenticado aunque su token siga vigente, y sus eventos salen del cat\u00e1logo. RN-20: un admin no puede suspenderse a s\u00ed mismo (403) y nunca puede quedar el sistema sin un admin activo (409 `ULTIMO_ADMIN_ACTIVO`; se bloquean los admins activos antes de contar)."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "usuario_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/usuarios/{usuario_id}/rol": {
+      "patch": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolUsuario"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Cambiar el rol de un usuario",
+        "description": "RN-20: no se puede cambiar el rol propio (403) ni dejar el sistema sin admins (409). Pasar a `ARTISTA` exige `nombre_artistico` (\u00fanico). Pasar de `ARTISTA` a otro rol da 409 `ROL_NO_CAMBIABLE` si tiene eventos `PROGRAMADO`/`EN_VIVO` o retiros `PENDIENTE`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "usuario_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/eventos": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "categoria",
+            "schema": {
+              "enum": [
+                "POP",
+                "ROCK",
+                "URBANO",
+                "ELECTRONICA",
+                "SALSA_TROPICAL",
+                "FOLCLOR",
+                "JAZZ_BLUES",
+                "CLASICA",
+                "OTRO"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "BORRADOR",
+                "PROGRAMADO",
+                "EN_VIVO",
+                "FINALIZADO",
+                "CANCELADO"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "artista_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "suspendido",
+            "description": "`true`: solo los suspendidos.",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "desde",
+            "description": "`fecha_inicio` mayor o igual.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "hasta",
+            "description": "`fecha_inicio` menor o igual.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoAdminPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar todos los eventos",
+        "description": "En cualquier estado, tambi\u00e9n borradores, cancelados y suspendidos. Filtros `q`, `categoria`, `estado`, `artista_id`, `suspendido`, `desde` y `hasta`."
+      }
+    },
+    "/api/v1/admin/eventos/{evento_id}/suspender": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoAdmin"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Motivo"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Suspender un evento",
+        "description": "`suspendido_admin = true` con `motivo` obligatorio. Sale del cat\u00e1logo (RN-21), no se puede comprar (RN-07), la reproducci\u00f3n responde 403 `EVENTO_SUSPENDIDO` (RN-10) y el artista no puede iniciar la transmisi\u00f3n. **No** finaliza ni cancela el evento. Si ya estaba suspendido: 409 `TRANSICION_INVALIDA`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/eventos/{evento_id}/reactivar": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventoAdmin"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Reactivar un evento suspendido",
+        "description": "Revierte la suspensi\u00f3n y borra el motivo. Si no estaba suspendido: 409."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "evento_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/compras": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "PENDIENTE",
+                "APROBADA",
+                "RECHAZADA",
+                "ANULADA",
+                "REEMBOLSADA"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "evento_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "usuario_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "desde",
+            "description": "`creado_en` mayor o igual.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "hasta",
+            "description": "`creado_en` menor o igual.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraAdminPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar compras",
+        "description": "Solo lectura. Filtros `estado`, `evento_id`, `usuario_id` y rango de fechas (`desde`/`hasta` sobre `creado_en`). El comprador se muestra solo por nombre."
+      }
+    },
+    "/api/v1/admin/retiros": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "M\u00e1ximo 100; valores mayores se recortan.",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "schema": {
+              "enum": [
+                "PENDIENTE",
+                "PAGADO",
+                "RECHAZADO"
+              ]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetiroAdminPagina"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar retiros",
+        "description": "Filtro opcional `estado`."
+      }
+    },
+    "/api/v1/admin/retiros/{retiro_id}/aprobar": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetiroAdmin"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Aprobar un retiro",
+        "description": "RN-16: `PENDIENTE \u2192 PAGADO` con `referencia_pago` simulada (`sim-payout-<uuid>`), `resuelto_por` y `resuelto_en`. Un retiro ya resuelto responde 409 `RETIRO_YA_RESUELTO`; la fila se bloquea para que dos admins no lo resuelvan a la vez."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "retiro_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/retiros/{retiro_id}/rechazar": {
+      "post": {
+        "responses": {
+          "422": {
+            "description": "Validaci\u00f3n.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetiroAdmin"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Motivo"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Rechazar un retiro",
+        "description": "RN-16: `motivo` obligatorio (422 si falta). Queda `RECHAZADO` y deja de restar del saldo del artista (RN-14). Un retiro ya resuelto responde 409 `RETIRO_YA_RESUELTO`."
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "retiro_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/admin/configuracion": {
+      "get": {
+        "responses": {
+          "403": {
+            "description": "Sin permiso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Configuracion"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Configuraci\u00f3n vigente (solo lectura)",
+        "description": "Comisi\u00f3n, m\u00ednimos y m\u00e1ximos, flags y modos de pasarela y streaming. Nunca incluye secretos ni credenciales."
+      }
+    }
+  },
+  "info": {
+    "title": "API de transmisi\u00f3n en vivo de conciertos",
+    "version": "v1"
+  },
+  "tags": [
+    {
+      "name": "Sistema",
+      "description": "Estado del servicio."
+    },
+    {
+      "name": "Auth",
+      "description": "Registro e inicio de sesi\u00f3n."
+    },
+    {
+      "name": "Usuarios",
+      "description": "Perfil del usuario."
+    },
+    {
+      "name": "Eventos",
+      "description": "Cat\u00e1logo y gesti\u00f3n de eventos."
+    },
+    {
+      "name": "Transmision",
+      "description": "Emisi\u00f3n y reproducci\u00f3n simuladas (en vivo y replay)."
+    },
+    {
+      "name": "Compras",
+      "description": "Compra de entradas."
+    },
+    {
+      "name": "Artistas",
+      "description": "Perfiles p\u00fablicos de artistas."
+    },
+    {
+      "name": "Artista (panel)",
+      "description": "Gestor de transmisi\u00f3n del artista: eventos, estad\u00edsticas, saldo y retiros."
+    },
+    {
+      "name": "Admin",
+      "description": "Panel de administraci\u00f3n. Todos los endpoints exigen rol `ADMIN`."
+    }
+  ],
+  "openapi": "3.0.3",
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "C\u00f3digo estable del error.",
+            "example": "VALIDACION"
+          },
+          "mensaje": {
+            "type": "string",
+            "example": "Los datos enviados no son v\u00e1lidos."
+          },
+          "detalles": {
+            "type": "object",
+            "description": "Detalle por campo, si aplica.",
+            "additionalProperties": {}
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaginationMetadata": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of items."
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages."
+          },
+          "first_page": {
+            "type": "integer",
+            "description": "First available page number."
+          },
+          "last_page": {
+            "type": "integer",
+            "description": "Last available page number."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number."
+          },
+          "previous_page": {
+            "type": "integer",
+            "description": "Previous page number."
+          },
+          "next_page": {
+            "type": "integer",
+            "description": "Next page number."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Salud": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "type": "string",
+            "example": "ok"
+          },
+          "base_de_datos": {
+            "type": "string",
+            "example": "ok"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Registro": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "example": "Ana G\u00f3mez"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "example": "ana@example.com"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true,
+            "minLength": 8,
+            "maxLength": 128,
+            "description": "8\u2013128 caracteres, con letra y d\u00edgito (RN-03).",
+            "example": "Clave1234"
+          },
+          "rol": {
+            "enum": [
+              "USUARIO",
+              "ARTISTA",
+              "ADMIN"
+            ],
+            "description": "USUARIO o ARTISTA. ADMIN no se auto-registra (RN-01)."
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Obligatorio si `rol=ARTISTA`.",
+            "example": "Los Cumbieros"
+          },
+          "acepta_tratamiento_datos": {
+            "type": "boolean",
+            "description": "Debe ser `true` (Ley 1581 de 2012, RN-01).",
+            "example": true
+          }
+        },
+        "required": [
+          "acepta_tratamiento_datos",
+          "email",
+          "nombre",
+          "password",
+          "rol"
+        ],
+        "additionalProperties": false
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "readOnly": true,
+            "example": "ana@example.com"
+          },
+          "nombre": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Ana G\u00f3mez"
+          },
+          "rol": {
+            "readOnly": true,
+            "enum": [
+              "USUARIO",
+              "ARTISTA",
+              "ADMIN"
+            ]
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "ACTIVO",
+              "SUSPENDIDO"
+            ]
+          },
+          "foto_url": {
+            "type": "string",
+            "readOnly": true,
+            "example": "/uploads/perfiles/3f2a.../1b9c....webp",
+            "nullable": true
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Los Cumbieros del R\u00edo",
+            "nullable": true
+          },
+          "biografia": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "consentimiento_datos_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "version_politica_datos": {
+            "type": "string",
+            "readOnly": true,
+            "example": "v1"
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "ana@example.com"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true,
+            "example": "Clave1234"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "Tokens": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT de acceso (15 min)."
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "JWT de refresco (7 d\u00edas)."
+          },
+          "usuario": {
+            "$ref": "#/components/schemas/Usuario"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccessToken": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT de acceso nuevo."
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuarioActualizar": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "example": "Ana G\u00f3mez"
+          },
+          "biografia": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "M\u00e1ximo 1000 caracteres.",
+            "nullable": true
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Solo artistas. \u00danico (RN-02)."
+          }
+        },
+        "additionalProperties": false
+      },
+      "FotoSubir": {
+        "type": "object",
+        "properties": {
+          "foto": {
+            "description": "Imagen JPEG, PNG o WebP de hasta 2 MB (RN-18).",
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": [
+          "foto"
+        ],
+        "additionalProperties": false
+      },
+      "ArtistaResumen": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Los Cumbieros"
+          },
+          "foto_url": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoResumen": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "artista": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ArtistaResumen"
+              }
+            ]
+          },
+          "titulo": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Concierto de lanzamiento"
+          },
+          "categoria": {
+            "readOnly": true,
+            "enum": [
+              "POP",
+              "ROCK",
+              "URBANO",
+              "ELECTRONICA",
+              "SALSA_TROPICAL",
+              "FOLCLOR",
+              "JAZZ_BLUES",
+              "CLASICA",
+              "OTRO"
+            ]
+          },
+          "portada_url": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "precio_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 20000
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "BORRADOR",
+              "PROGRAMADO",
+              "EN_VIVO",
+              "FINALIZADO",
+              "CANCELADO"
+            ]
+          },
+          "replay_disponible": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventoResumen"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArtistaPublico": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Los Cumbieros"
+          },
+          "foto_url": {
+            "type": "string",
+            "readOnly": true,
+            "example": "/uploads/perfiles/3f2a.../1b9c.webp",
+            "nullable": true
+          },
+          "biografia": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Cumbia y vallenato desde Barranquilla.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArtistaPublicoPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistaPublico"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoCrear": {
+        "type": "object",
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150,
+            "example": "Mi primer concierto"
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Repertorio completo en vivo.",
+            "nullable": true
+          },
+          "categoria": {
+            "default": "OTRO",
+            "enum": [
+              "POP",
+              "ROCK",
+              "URBANO",
+              "ELECTRONICA",
+              "SALSA_TROPICAL",
+              "FOLCLOR",
+              "JAZZ_BLUES",
+              "CLASICA",
+              "OTRO"
+            ]
+          },
+          "portada_url": {
+            "type": "string",
+            "format": "url",
+            "maxLength": 255,
+            "description": "URL externa; no hay subida de portadas.",
+            "nullable": true
+          },
+          "precio_cop": {
+            "type": "integer",
+            "description": "Pesos colombianos enteros. Rango seg\u00fan configuraci\u00f3n (RN-04).",
+            "example": 20000
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 con zona.",
+            "example": "2026-12-05T01:00:00+00:00"
+          },
+          "duracion_estimada_min": {
+            "type": "integer",
+            "default": 60,
+            "minimum": 15,
+            "maximum": 240
+          },
+          "replay_habilitado": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "fecha_inicio",
+          "precio_cop",
+          "titulo"
+        ],
+        "additionalProperties": false
+      },
+      "Evento": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "artista": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ArtistaResumen"
+              }
+            ]
+          },
+          "titulo": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Concierto de lanzamiento"
+          },
+          "categoria": {
+            "readOnly": true,
+            "enum": [
+              "POP",
+              "ROCK",
+              "URBANO",
+              "ELECTRONICA",
+              "SALSA_TROPICAL",
+              "FOLCLOR",
+              "JAZZ_BLUES",
+              "CLASICA",
+              "OTRO"
+            ]
+          },
+          "portada_url": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "precio_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 20000
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "BORRADOR",
+              "PROGRAMADO",
+              "EN_VIVO",
+              "FINALIZADO",
+              "CANCELADO"
+            ]
+          },
+          "replay_disponible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "descripcion": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "duracion_estimada_min": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 90
+          },
+          "replay_habilitado": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "inicio_real": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "fin_real": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "suspendido_admin": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "actualizado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoDetalle": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "artista": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ArtistaResumen"
+              }
+            ]
+          },
+          "titulo": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Concierto de lanzamiento"
+          },
+          "categoria": {
+            "readOnly": true,
+            "enum": [
+              "POP",
+              "ROCK",
+              "URBANO",
+              "ELECTRONICA",
+              "SALSA_TROPICAL",
+              "FOLCLOR",
+              "JAZZ_BLUES",
+              "CLASICA",
+              "OTRO"
+            ]
+          },
+          "portada_url": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "precio_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 20000
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "BORRADOR",
+              "PROGRAMADO",
+              "EN_VIVO",
+              "FINALIZADO",
+              "CANCELADO"
+            ]
+          },
+          "replay_disponible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "descripcion": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "duracion_estimada_min": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 90
+          },
+          "replay_habilitado": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "inicio_real": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "fin_real": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "suspendido_admin": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "actualizado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "es_favorito": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Solo con sesi\u00f3n: \u00bflo marqu\u00e9 como favorito?"
+          },
+          "comprado": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Solo con sesi\u00f3n: \u00bftengo una compra `APROBADA`?"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoActualizar": {
+        "type": "object",
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "descripcion": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoria": {
+            "enum": [
+              "POP",
+              "ROCK",
+              "URBANO",
+              "ELECTRONICA",
+              "SALSA_TROPICAL",
+              "FOLCLOR",
+              "JAZZ_BLUES",
+              "CLASICA",
+              "OTRO"
+            ]
+          },
+          "portada_url": {
+            "type": "string",
+            "format": "url",
+            "maxLength": 255,
+            "nullable": true
+          },
+          "precio_cop": {
+            "type": "integer",
+            "description": "Pesos colombianos enteros. Rango seg\u00fan configuraci\u00f3n (RN-04).",
+            "example": 20000
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-12-05T01:00:00+00:00"
+          },
+          "duracion_estimada_min": {
+            "type": "integer",
+            "minimum": 15,
+            "maximum": 240
+          },
+          "replay_habilitado": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Credenciales": {
+        "type": "object",
+        "properties": {
+          "rtmp_url": {
+            "type": "string",
+            "description": "URL de ingesta (RTMP) para OBS.",
+            "example": "rtmp://localhost:1935/live/3f2a9c1e-7b0d-4c55-9a1e-2d6f8b1c0a11"
+          },
+          "stream_key": {
+            "type": "string",
+            "description": "Clave de emisi\u00f3n. **Solo se muestra aqu\u00ed, una vez**: no se guarda en claro ni se puede volver a consultar; pedir otra la rota (RN-11).",
+            "example": "Qk3v1x0Zf8mY2nJhT5uWb7LrD9sAeC4pGoHiXyN6VtM"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IniciarTransmision": {
+        "type": "object",
+        "properties": {
+          "stream_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "La clave devuelta por `credenciales` (RQ6).",
+            "example": "Qk3v1x0Zf8mY2nJhT5uWb7LrD9sAeC4pGoHiXyN6VtM"
+          }
+        },
+        "required": [
+          "stream_key"
+        ],
+        "additionalProperties": false
+      },
+      "EstadoTransmision": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "example": "EN_VIVO",
+            "enum": [
+              "BORRADOR",
+              "PROGRAMADO",
+              "EN_VIVO",
+              "FINALIZADO",
+              "CANCELADO"
+            ]
+          },
+          "espectadores_actuales": {
+            "type": "integer",
+            "example": 41
+          },
+          "pico_espectadores": {
+            "type": "integer",
+            "example": 57
+          },
+          "duracion_transcurrida_min": {
+            "type": "integer",
+            "description": "Minutos desde `inicio_real` (hasta `fin_real` si ya termin\u00f3)."
+          },
+          "inicio_real": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fin_real": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Reproduccion": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "example": "VIVO",
+            "enum": [
+              "VIVO",
+              "REPLAY"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "HLS ficticio con el token en la query.",
+            "example": "http://localhost:8888/live/3f2a9c1e-7b0d-4c55/index.m3u8?token=eyJhbGci..."
+          },
+          "token": {
+            "type": "string",
+            "description": "JWT corto de reproducci\u00f3n (distinto del de sesi\u00f3n)."
+          },
+          "expira_en": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AudienciaSimulada": {
+        "type": "object",
+        "properties": {
+          "espectadores": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000,
+            "description": "Espectadores simult\u00e1neos a fijar.",
+            "example": 120
+          }
+        },
+        "required": [
+          "espectadores"
+        ],
+        "additionalProperties": false
+      },
+      "CompraCrear": {
+        "type": "object",
+        "properties": {
+          "metodo_pago": {
+            "description": "Medio de pago local.",
+            "example": "NEQUI",
+            "enum": [
+              "CARD",
+              "PSE",
+              "NEQUI"
+            ]
+          }
+        },
+        "required": [
+          "metodo_pago"
+        ],
+        "additionalProperties": false
+      },
+      "Compra": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "evento_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "referencia": {
+            "type": "string",
+            "readOnly": true,
+            "description": "`reference` enviada a Wompi.",
+            "example": "conc-3f2a9c..."
+          },
+          "monto_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Precio congelado al comprar.",
+            "example": 20000
+          },
+          "metodo_pago": {
+            "readOnly": true,
+            "enum": [
+              "CARD",
+              "PSE",
+              "NEQUI"
+            ]
+          },
+          "estado": {
+            "readOnly": true,
+            "description": "`APROBADA` da acceso al evento (RN-08).",
+            "enum": [
+              "PENDIENTE",
+              "APROBADA",
+              "RECHAZADA",
+              "ANULADA",
+              "REEMBOLSADA"
+            ]
+          },
+          "wompi_transaccion_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "expira_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "aprobado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Checkout": {
+        "type": "object",
+        "properties": {
+          "referencia": {
+            "type": "string",
+            "example": "conc-3f2a9c..."
+          },
+          "monto_en_centavos": {
+            "type": "integer",
+            "example": 2000000
+          },
+          "moneda": {
+            "type": "string",
+            "example": "COP"
+          },
+          "firma_integridad": {
+            "type": "string",
+            "description": "SHA256(referencia + monto_en_centavos + moneda + secreto)."
+          },
+          "checkout_url": {
+            "type": "string",
+            "description": "Simulada: ruta del simulador de pago."
+          },
+          "expira_en": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraCreada": {
+        "type": "object",
+        "properties": {
+          "compra": {
+            "$ref": "#/components/schemas/Compra"
+          },
+          "checkout": {
+            "$ref": "#/components/schemas/Checkout"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MiCompra": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "evento_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "referencia": {
+            "type": "string",
+            "readOnly": true,
+            "description": "`reference` enviada a Wompi.",
+            "example": "conc-3f2a9c..."
+          },
+          "monto_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Precio congelado al comprar.",
+            "example": 20000
+          },
+          "metodo_pago": {
+            "readOnly": true,
+            "enum": [
+              "CARD",
+              "PSE",
+              "NEQUI"
+            ]
+          },
+          "estado": {
+            "readOnly": true,
+            "description": "`APROBADA` da acceso al evento (RN-08).",
+            "enum": [
+              "PENDIENTE",
+              "APROBADA",
+              "RECHAZADA",
+              "ANULADA",
+              "REEMBOLSADA"
+            ]
+          },
+          "wompi_transaccion_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "expira_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "aprobado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "evento": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventoResumen"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "MiCompraPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MiCompra"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Simulador": {
+        "type": "object",
+        "properties": {
+          "resultado": {
+            "type": "string",
+            "enum": [
+              "APPROVED",
+              "DECLINED",
+              "VOIDED",
+              "ERROR"
+            ],
+            "description": "C\u00f3mo termina el checkout simulado.",
+            "example": "APPROVED"
+          }
+        },
+        "required": [
+          "resultado"
+        ],
+        "additionalProperties": false
+      },
+      "WompiEvento": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "example": "transaction.updated"
+          },
+          "data": {
+            "type": "object",
+            "example": {
+              "transaction": {
+                "id": "sim-0b1f...",
+                "reference": "conc-3f2a9c...",
+                "status": "APPROVED",
+                "amount_in_cents": 2000000,
+                "currency": "COP",
+                "payment_method_type": "NEQUI"
+              }
+            },
+            "additionalProperties": {}
+          },
+          "environment": {
+            "type": "string",
+            "example": "test"
+          },
+          "signature": {
+            "type": "object",
+            "example": {
+              "properties": [
+                "transaction.id",
+                "transaction.status",
+                "transaction.amount_in_cents"
+              ],
+              "checksum": "<sha256>"
+            },
+            "additionalProperties": {}
+          },
+          "timestamp": {
+            "example": 1730000000
+          },
+          "sent_at": {
+            "type": "string",
+            "example": "2026-11-02T20:00:00Z"
+          }
+        },
+        "additionalProperties": true
+      },
+      "WebhookRespuesta": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "type": "string",
+            "example": "recibido"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ArtistaPerfil": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Los Cumbieros"
+          },
+          "foto_url": {
+            "type": "string",
+            "readOnly": true,
+            "example": "/uploads/perfiles/3f2a.../1b9c.webp",
+            "nullable": true
+          },
+          "biografia": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Cumbia y vallenato desde Barranquilla.",
+            "nullable": true
+          },
+          "seguidores": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Solo el conteo, nunca la lista.",
+            "example": 87
+          },
+          "eventos_proximos": {
+            "type": "array",
+            "readOnly": true,
+            "description": "Eventos visibles `PROGRAMADO` o `EN_VIVO`, por fecha (hasta 20).",
+            "items": {
+              "$ref": "#/components/schemas/EventoResumen"
+            }
+          },
+          "siguiendo": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Solo si la petici\u00f3n trae sesi\u00f3n: \u00bfsigo a este artista?"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Resumen": {
+        "type": "object",
+        "properties": {
+          "eventos_por_estado": {
+            "type": "object",
+            "description": "Siempre trae los 5 estados, con 0 si no hay eventos.",
+            "example": {
+              "BORRADOR": 1,
+              "PROGRAMADO": 2,
+              "EN_VIVO": 0,
+              "FINALIZADO": 4,
+              "CANCELADO": 0
+            },
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "entradas_vendidas": {
+            "type": "integer",
+            "example": 212
+          },
+          "ingresos_brutos_cop": {
+            "type": "integer",
+            "example": 4240000
+          },
+          "comision_plataforma_cop": {
+            "type": "integer",
+            "example": 424000
+          },
+          "ingresos_netos_cop": {
+            "type": "integer",
+            "example": 3816000
+          },
+          "seguidores": {
+            "type": "integer",
+            "description": "Conteo real de seguidores.",
+            "example": 87
+          },
+          "pico_espectadores_promedio": {
+            "type": "number",
+            "description": "Promedio del pico solo de eventos transmitidos (\u00fanico decimal).",
+            "example": 41.5
+          }
+        },
+        "additionalProperties": false
+      },
+      "Saldo": {
+        "type": "object",
+        "properties": {
+          "disponible_cop": {
+            "type": "integer",
+            "description": "`ingresos_liberados \u2212 en_proceso \u2212 retirado` (RN-14).",
+            "example": 2900000
+          },
+          "retenido_cop": {
+            "type": "integer",
+            "description": "Neto de eventos `PROGRAMADO`/`EN_VIVO`; se libera al finalizar.",
+            "example": 400000
+          },
+          "en_proceso_cop": {
+            "type": "integer",
+            "description": "Suma de retiros `PENDIENTE`.",
+            "example": 300000
+          },
+          "retirado_cop": {
+            "type": "integer",
+            "description": "Suma de retiros `PAGADO`.",
+            "example": 216000
+          }
+        },
+        "additionalProperties": false
+      },
+      "VentaDiaria": {
+        "type": "object",
+        "properties": {
+          "fecha": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-11-01"
+          },
+          "entradas": {
+            "type": "integer",
+            "example": 12
+          },
+          "ingresos_netos_cop": {
+            "type": "integer",
+            "example": 216000
+          }
+        },
+        "additionalProperties": false
+      },
+      "Estadisticas": {
+        "type": "object",
+        "properties": {
+          "resumen": {
+            "$ref": "#/components/schemas/Resumen"
+          },
+          "saldo": {
+            "$ref": "#/components/schemas/Saldo"
+          },
+          "ventas_por_dia": {
+            "type": "array",
+            "description": "Solo los d\u00edas con ventas, por fecha en la zona horaria America/Bogota (UTC\u22125), de la m\u00e1s antigua a la m\u00e1s reciente. Cuenta compras `APROBADA` seg\u00fan su fecha de aprobaci\u00f3n.",
+            "items": {
+              "$ref": "#/components/schemas/VentaDiaria"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "EstadisticasEvento": {
+        "type": "object",
+        "properties": {
+          "evento_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entradas_vendidas": {
+            "type": "integer",
+            "example": 40
+          },
+          "ingresos_brutos_cop": {
+            "type": "integer",
+            "example": 800000
+          },
+          "ingresos_netos_cop": {
+            "type": "integer",
+            "example": 720000
+          },
+          "pico_espectadores": {
+            "type": "integer",
+            "example": 57
+          },
+          "vistas_vivo": {
+            "type": "integer",
+            "example": 63
+          },
+          "vistas_replay": {
+            "type": "integer",
+            "example": 12
+          },
+          "duracion_real_min": {
+            "type": "integer",
+            "description": "`fin_real \u2212 inicio_real`; `null` si no se transmiti\u00f3 o no termin\u00f3.",
+            "example": 92,
+            "nullable": true
+          },
+          "favoritos": {
+            "type": "integer",
+            "description": "Veces marcado como favorito.",
+            "example": 25
+          },
+          "ventas_por_dia": {
+            "type": "array",
+            "description": "Solo los d\u00edas con ventas, por fecha en la zona horaria America/Bogota (UTC\u22125), de la m\u00e1s antigua a la m\u00e1s reciente. Cuenta compras `APROBADA` seg\u00fan su fecha de aprobaci\u00f3n.",
+            "items": {
+              "$ref": "#/components/schemas/VentaDiaria"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RetiroCrear": {
+        "type": "object",
+        "properties": {
+          "monto_cop": {
+            "type": "integer",
+            "description": "COP enteros, entre el m\u00ednimo y tu disponible.",
+            "example": 100000
+          },
+          "banco": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "example": "Bancolombia"
+          },
+          "tipo_cuenta": {
+            "example": "AHORROS",
+            "enum": [
+              "AHORROS",
+              "CORRIENTE",
+              "NEQUI"
+            ]
+          },
+          "cuenta_ultimos4": {
+            "type": "string",
+            "pattern": "^[0-9]{4}\\Z",
+            "description": "Exactamente 4 d\u00edgitos, como texto.",
+            "example": "0042"
+          }
+        },
+        "required": [
+          "banco",
+          "cuenta_ultimos4",
+          "monto_cop",
+          "tipo_cuenta"
+        ],
+        "additionalProperties": false
+      },
+      "Retiro": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "monto_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 100000
+          },
+          "banco": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Bancolombia"
+          },
+          "tipo_cuenta": {
+            "readOnly": true,
+            "enum": [
+              "AHORROS",
+              "CORRIENTE",
+              "NEQUI"
+            ]
+          },
+          "cuenta_ultimos4": {
+            "type": "string",
+            "readOnly": true,
+            "example": "0042"
+          },
+          "estado": {
+            "readOnly": true,
+            "description": "`PAGADO` de inmediato si `RETIRO_AUTO_APROBAR=true`.",
+            "enum": [
+              "PENDIENTE",
+              "PAGADO",
+              "RECHAZADO"
+            ]
+          },
+          "referencia_pago": {
+            "type": "string",
+            "readOnly": true,
+            "example": "sim-payout-5b1e...",
+            "nullable": true
+          },
+          "motivo_rechazo": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "solicitado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "resuelto_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RetiroPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Retiro"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuariosAgregados": {
+        "type": "object",
+        "properties": {
+          "por_rol": {
+            "type": "object",
+            "example": {
+              "USUARIO": 120,
+              "ARTISTA": 14,
+              "ADMIN": 2
+            },
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "por_estado": {
+            "type": "object",
+            "example": {
+              "ACTIVO": 134,
+              "SUSPENDIDO": 2
+            },
+            "additionalProperties": {
+              "type": "integer"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RetirosPendientes": {
+        "type": "object",
+        "properties": {
+          "cantidad": {
+            "type": "integer",
+            "example": 3
+          },
+          "monto_cop": {
+            "type": "integer",
+            "example": 450000
+          }
+        },
+        "additionalProperties": false
+      },
+      "Dashboard": {
+        "type": "object",
+        "properties": {
+          "usuarios": {
+            "$ref": "#/components/schemas/UsuariosAgregados"
+          },
+          "eventos_por_estado": {
+            "type": "object",
+            "example": {
+              "BORRADOR": 4,
+              "PROGRAMADO": 9,
+              "EN_VIVO": 1,
+              "FINALIZADO": 22,
+              "CANCELADO": 2
+            },
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "entradas_vendidas": {
+            "type": "integer",
+            "description": "Compras `APROBADA`.",
+            "example": 812
+          },
+          "ingresos_brutos_cop": {
+            "type": "integer",
+            "example": 16240000
+          },
+          "comisiones_acumuladas_cop": {
+            "type": "integer",
+            "example": 1624000
+          },
+          "retiros_pendientes": {
+            "$ref": "#/components/schemas/RetirosPendientes"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuarioPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Usuario"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "AdminCrear": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "example": "Carla Ruiz"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "example": "carla@plataforma.co"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true,
+            "minLength": 8,
+            "maxLength": 128,
+            "description": "8\u2013128 caracteres, con letra y d\u00edgito.",
+            "example": "Clave1234"
+          }
+        },
+        "required": [
+          "email",
+          "nombre",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "EstadoUsuario": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "description": "`SUSPENDIDO` corta el acceso de inmediato (RN-19).",
+            "example": "SUSPENDIDO",
+            "enum": [
+              "ACTIVO",
+              "SUSPENDIDO"
+            ]
+          }
+        },
+        "required": [
+          "estado"
+        ],
+        "additionalProperties": false
+      },
+      "RolUsuario": {
+        "type": "object",
+        "properties": {
+          "rol": {
+            "example": "ARTISTA",
+            "enum": [
+              "USUARIO",
+              "ARTISTA",
+              "ADMIN"
+            ]
+          },
+          "nombre_artistico": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Obligatorio al pasar a `ARTISTA`.",
+            "example": "Los Cumbieros"
+          }
+        },
+        "required": [
+          "rol"
+        ],
+        "additionalProperties": false
+      },
+      "EventoAdmin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "artista": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ArtistaResumen"
+              }
+            ]
+          },
+          "titulo": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Concierto de lanzamiento"
+          },
+          "categoria": {
+            "readOnly": true,
+            "enum": [
+              "POP",
+              "ROCK",
+              "URBANO",
+              "ELECTRONICA",
+              "SALSA_TROPICAL",
+              "FOLCLOR",
+              "JAZZ_BLUES",
+              "CLASICA",
+              "OTRO"
+            ]
+          },
+          "portada_url": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "precio_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 20000
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "BORRADOR",
+              "PROGRAMADO",
+              "EN_VIVO",
+              "FINALIZADO",
+              "CANCELADO"
+            ]
+          },
+          "replay_disponible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "suspendido_admin": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "motivo_suspension": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Contenido no permitido",
+            "nullable": true
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoAdminPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventoAdmin"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Motivo": {
+        "type": "object",
+        "properties": {
+          "motivo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Obligatorio.",
+            "example": "Incumple las normas de la plataforma"
+          }
+        },
+        "required": [
+          "motivo"
+        ],
+        "additionalProperties": false
+      },
+      "UsuarioResumen": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "nombre": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Ana G\u00f3mez"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventoMinimo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "titulo": {
+            "type": "string",
+            "readOnly": true
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "BORRADOR",
+              "PROGRAMADO",
+              "EN_VIVO",
+              "FINALIZADO",
+              "CANCELADO"
+            ]
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraAdmin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "referencia": {
+            "type": "string",
+            "readOnly": true,
+            "example": "conc-3f2a9c..."
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "PENDIENTE",
+              "APROBADA",
+              "RECHAZADA",
+              "ANULADA",
+              "REEMBOLSADA"
+            ]
+          },
+          "metodo_pago": {
+            "readOnly": true,
+            "enum": [
+              "CARD",
+              "PSE",
+              "NEQUI"
+            ]
+          },
+          "monto_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 20000
+          },
+          "comision_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 2000
+          },
+          "neto_artista_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 18000
+          },
+          "wompi_transaccion_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "creado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "aprobado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "usuario": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UsuarioResumen"
+              }
+            ]
+          },
+          "evento": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventoMinimo"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraAdminPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompraAdmin"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RetiroAdmin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "artista": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ArtistaResumen"
+              }
+            ]
+          },
+          "monto_cop": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 100000
+          },
+          "banco": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Bancolombia"
+          },
+          "tipo_cuenta": {
+            "readOnly": true,
+            "enum": [
+              "AHORROS",
+              "CORRIENTE",
+              "NEQUI"
+            ]
+          },
+          "cuenta_ultimos4": {
+            "type": "string",
+            "readOnly": true,
+            "example": "0042"
+          },
+          "estado": {
+            "readOnly": true,
+            "enum": [
+              "PENDIENTE",
+              "PAGADO",
+              "RECHAZADO"
+            ]
+          },
+          "referencia_pago": {
+            "type": "string",
+            "readOnly": true,
+            "example": "sim-payout-5b1e...",
+            "nullable": true
+          },
+          "motivo_rechazo": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "resuelto_por": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "nullable": true
+          },
+          "solicitado_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "resuelto_en": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RetiroAdminPagina": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 134
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetiroAdmin"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Configuracion": {
+        "type": "object",
+        "properties": {
+          "entorno": {
+            "type": "string",
+            "example": "production"
+          },
+          "comision_plataforma_pct": {
+            "type": "number",
+            "example": 10.0
+          },
+          "precio_min_cop": {
+            "type": "integer",
+            "example": 5000
+          },
+          "precio_max_cop": {
+            "type": "integer",
+            "example": 500000
+          },
+          "retiro_min_cop": {
+            "type": "integer",
+            "example": 50000
+          },
+          "retiro_auto_aprobar": {
+            "type": "boolean",
+            "example": false
+          },
+          "compra_pendiente_ttl_min": {
+            "type": "integer",
+            "example": 30
+          },
+          "max_eventos_programados_nuevo": {
+            "type": "integer",
+            "example": 3
+          },
+          "politica_datos_version": {
+            "type": "string",
+            "example": "v1"
+          },
+          "pasarela_pagos": {
+            "type": "string",
+            "example": "wompi_simulado"
+          },
+          "proveedor_streaming": {
+            "type": "string",
+            "example": "simulado"
+          },
+          "enforce_start_window": {
+            "type": "boolean",
+            "example": true
+          },
+          "start_window_min": {
+            "type": "integer",
+            "example": 30
+          },
+          "playback_token_ttl_min": {
+            "type": "integer",
+            "example": 10
+          },
+          "jwt_access_ttl_min": {
+            "type": "integer",
+            "example": 15
+          },
+          "jwt_refresh_ttl_dias": {
+            "type": "integer",
+            "example": 7
+          },
+          "max_upload_mb": {
+            "type": "integer",
+            "example": 2
+          },
+          "enable_dev_endpoints": {
+            "type": "boolean",
+            "example": false
+          },
+          "media_base_url": {
+            "type": "string",
+            "example": "http://localhost:8888"
+          },
+          "rtmp_base_url": {
+            "type": "string",
+            "example": "rtmp://localhost:1935/live"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
